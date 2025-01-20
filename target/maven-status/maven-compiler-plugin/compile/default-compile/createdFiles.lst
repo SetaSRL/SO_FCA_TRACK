@@ -10,7 +10,6 @@ so\seta\fca\gui\ExportFrame$2.class
 so\seta\fca\gui\Login$3.class
 so\seta\fca\gui\MainFrame$1.class
 so\seta\fca\util\LoggerNew.class
-so\seta\fca\gui\ImportFrame$3.class
 so\seta\fca\gui\Login$2.class
 so\seta\fca\gui\ExportFrame$5.class
 so\seta\fca\gui\MainFrame$6.class
@@ -18,6 +17,7 @@ so\seta\fca\gui\ImportFrame$1.class
 so\seta\fca\gui\Login$5.class
 so\seta\fca\gui\MainFrame.class
 so\seta\fca\gui\ExportFrame.class
+so\seta\fca\gui\MainFrame$10.class
 so\seta\fca\gui\Login$4.class
 so\seta\fca\util\ExcelImport$1.class
 so\seta\fca\gui\ExportFrame$3.class

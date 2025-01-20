@@ -217,13 +217,13 @@ public class DB_FCA {
 
     }
      
-     public boolean sbloccaPratiche() {
+     public int sbloccaPratiche() {
         try (Statement stmt = conn.createStatement()) {
-            return stmt.executeUpdate("update pratiche set stato='S' where stato='L'") > 0;
+            return stmt.executeUpdate("update pratiche set stato='S' where stato='L'");
         } catch (Exception e) {
              LOGGER.log.severe(estraiEccezione(e));
         }
-        return false;
+        return 0;
     } 
     
      public boolean insLavorazione(Lavorazione lav) {

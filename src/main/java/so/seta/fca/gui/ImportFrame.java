@@ -32,7 +32,6 @@ public class ImportFrame extends javax.swing.JFrame {
     public static LoggerNew LOGGER = new LoggerNew("FCA_TRACK",PATH);
     private Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
     private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
-    private boolean waitCursorIsShowing;
     private String defaultButtonText = "Show Wait Cursor";
  
     // a default constructor
@@ -67,7 +66,6 @@ public class ImportFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaEsito = new javax.swing.JTextArea();
-        jButton2 = new javax.swing.JButton();
 
         jFileChooser1.setFileFilter(null);
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
@@ -93,13 +91,6 @@ public class ImportFrame extends javax.swing.JFrame {
         jTextAreaEsito.setRows(5);
         jScrollPane1.setViewportView(jTextAreaEsito);
 
-        jButton2.setText("jButton2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,10 +99,7 @@ public class ImportFrame extends javax.swing.JFrame {
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(248, 248, 248)
-                        .addComponent(jButton2))
+                    .addComponent(jButton1)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
@@ -119,15 +107,10 @@ public class ImportFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(jLabel1)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jButton2))))
+                .addGap(23, 23, 23)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -181,10 +164,6 @@ public class ImportFrame extends javax.swing.JFrame {
             System.out.println("File access cancelled by user.");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
     
 //    private void run(MainFrame frame) {
 //          final JDialog loading = new JDialog(frame);
@@ -253,7 +232,6 @@ public class ImportFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
