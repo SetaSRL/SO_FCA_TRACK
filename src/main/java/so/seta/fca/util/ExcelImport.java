@@ -9,8 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
- 
-import org.apache.poi.ss.usermodel.Cell;
+ import org.apache.poi.ss.usermodel.Cell;
 import static org.apache.poi.ss.usermodel.CellType.BOOLEAN;
 import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
 import static org.apache.poi.ss.usermodel.CellType.STRING;
@@ -18,7 +17,6 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import so.seta.fca.db.DB_FCA;
 import so.seta.fca.entity.Result;
@@ -71,7 +69,8 @@ public class ExcelImport  {
     public static Result NewReadFromExcel(String excelFilePath) throws IOException {
         Result ritorno = new Result(); 
         int contaPratiche = 0;    
-        try (Workbook workbook = WorkbookFactory.create(new FileInputStream(excelFilePath))) {
+       
+        try ( Workbook workbook = new XSSFWorkbook(new FileInputStream(excelFilePath))) {
             DB_FCA dbf = new DB_FCA();
             Sheet sheet = workbook.getSheetAt(1);
             int startRow = 0;

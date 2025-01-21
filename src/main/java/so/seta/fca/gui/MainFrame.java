@@ -26,6 +26,8 @@ import so.seta.fca.entity.Utente;
  * @author Roberto Federico
  */
 public class MainFrame extends javax.swing.JFrame {
+
+    private static final long serialVersionUID = 1L;
 private DB_FCA db = null;
 private Utente usr = new Utente(); 
 

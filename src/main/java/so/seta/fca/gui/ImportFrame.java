@@ -141,7 +141,7 @@ public class ImportFrame extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
                  File file = jFileChooser1.getSelectedFile();
-                 ExcelImport.ReadFromExcel(file.getAbsolutePath());
+                 //ExcelImport.ReadFromExcel(file.getAbsolutePath());
                  this.setCursor(waitCursor);
                  Result rit = ExcelImport.NewReadFromExcel(file.getAbsolutePath());
                  
@@ -149,7 +149,7 @@ public class ImportFrame extends javax.swing.JFrame {
                     jTextAreaEsito.setText(rit.getMessaggio());
                  }
                  else {
-                  jTextAreaEsito.setText("Prima Nessuna pratica caricata"); 
+                  jTextAreaEsito.setText("Nessuna pratica caricata"); 
                  }
                  this.setCursor(defaultCursor);
                 }

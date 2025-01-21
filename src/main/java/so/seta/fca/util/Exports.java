@@ -6,14 +6,9 @@ package so.seta.fca.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -31,7 +26,7 @@ public class Exports {
          Result ris = new Result();
           try {
              LocalDateTime date = LocalDateTime.now();
-             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmm");
+             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
             String ts = date.format(formatter);
             XSSFWorkbook wb = new XSSFWorkbook();
             Sheet sh = wb.createSheet("Lavorazioni");    

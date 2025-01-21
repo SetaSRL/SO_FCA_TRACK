@@ -118,7 +118,7 @@ public class DB_FCA {
     }
     
     public List<String[]> rs_PraticheLavorate(String date_start, String date_end) {
-        List<String[]> out = new ArrayList();
+        List<String[]> out = new ArrayList<>();
         try {
             String query = "SELECT LAV.NUM_PRA, CASE WHEN LAV.ESITO='CH' THEN 'CHIUSURA' ELSE CASE WHEN LAV.ESITO = 'SO' THEN 'SOSPENSIONE' ELSE 'NON LAVORABILE' END END AS Esito," ;
             query += "DATE_FORMAT(LAV.DATALAVORAZIONE, '%d-%m-%Y %H:%i') DATALAV , ";
@@ -177,7 +177,7 @@ public class DB_FCA {
         return null;
     }
    
-    public List<Lavorazione> VerificaPratica(String numeroPratica) {
+    public List<Lavorazione> VerificaPratica(String numeroPratica) {                       
             List<Lavorazione> out = new ArrayList();    
             try {
               String query = "SELECT ID," +

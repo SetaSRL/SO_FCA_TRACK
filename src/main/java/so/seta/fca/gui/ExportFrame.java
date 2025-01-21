@@ -27,6 +27,7 @@ public class ExportFrame extends javax.swing.JFrame {
     public static final ResourceBundle conf = ResourceBundle.getBundle("conf.conf");   
     public static final String PATH = conf.getString("path.log");
     public static LoggerNew LOGGER = new LoggerNew("FCA_TRACK",PATH);
+    private static final long serialVersionUID = 1L;
     String periodo1;
     String periodo2;
     List<String[]> rsLavorazioni = new ArrayList();
