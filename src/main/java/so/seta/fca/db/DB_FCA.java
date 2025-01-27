@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package so.seta.fca.db;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -15,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -24,8 +27,13 @@ import static so.seta.fca.util.Utility.estraiEccezione;
 
 
 import java.util.logging.Level;
+import org.apache.commons.lang3.StringUtils;
 import so.seta.fca.entity.Lavorazione;
 import so.seta.fca.entity.Pratica;
+import so.seta.fca.entity.Result;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
 
 /**
  *
@@ -254,5 +262,108 @@ public class DB_FCA {
             } catch (SQLException ex) {
                 LOGGER.log.severe(estraiEccezione(ex));
             }
+    }
+      
+     public Result insPraticheBatch(String excelFilePath) {
+          int batchSize = 30;
+           Result ret = new Result();
+        try {
+            long start = System.currentTimeMillis();
+             
+            FileInputStream inputStream = new FileInputStream(excelFilePath);
+ 
+            Workbook workbook = new XSSFWorkbook(inputStream);
+ 
+            Sheet firstSheet = workbook.getSheetAt(1);
+            Iterator<Row> rowIterator = firstSheet.iterator();
+//            this.conn.setAutoCommit(false);
+            String sql = "INSERT INTO pratiche (NUM_PRA,STATO,data) values (?,'S',Now())";            
+            PreparedStatement ps = this.conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            int count = 0;
+            int contaPratiche = 0;
+             DataFormatter formatter = new DataFormatter(); //creating formatter using the default locale
+             while (rowIterator.hasNext()) {
+                 Row nextRow = rowIterator.next();
+                 Iterator<Cell> cellIterator = nextRow.cellIterator();
+                    while (cellIterator.hasNext()) {
+                        Cell nextCell = cellIterator.next();
+                        int columnIndex = nextCell.getColumnIndex();
+                        if (columnIndex == 0) {
+                           String numPratica  = formatter.formatCellValue(nextCell);
+                            if (checkCell(numPratica)) {
+                                ps.setString(1, numPratica);
+                                ps.addBatch();
+                                contaPratiche++;
+                            }
+                        }   
+                     }
+                if (++count % batchSize == 0) {
+                    ps.executeBatch();
+                }                
+             }
+          
+              workbook.close();
+             
+            // execute the remaining queries
+            ps.executeBatch();
+  
+//            this.conn.commit();
+            this.conn.close();
+             
+            long end = System.currentTimeMillis();
+//            ret.setMessaggio(String.format("Import done in %d ms\n", (end - start)));
+               ret.setMessaggio(String.format("Numero pratichwe inserite %d", contaPratiche)); 
+              ret.setEsito(true);
+            } catch (IOException ex1) {
+              ret.setMessaggio("Error reading file");
+              LOGGER.log.severe(estraiEccezione(ex1));
+            } catch (SQLException ex) {
+               ret.setMessaggio("Database error");
+                LOGGER.log.severe(estraiEccezione(ex));
+            }
+        
+        return ret;
+    } 
+      public Result insPraticheBatchFromList(List<String> listaPratiche) {
+          int batchSize = 30;
+           Result ret = new Result();
+        try {
+//            this.conn.setAutoCommit(false);
+            long start = System.currentTimeMillis();
+            String sql = "INSERT INTO praticheTest (NUM_PRA,STATO,data) values (?,'S',Now())";            
+            PreparedStatement ps = this.conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            int count = 0;
+            
+             Iterator<String> iter;
+            for(String el : listaPratiche) {
+              ps.setString(1, el);
+                ps.addBatch();
+                if (++count % batchSize == 0) {
+                    ps.executeBatch();
+                }   
+            }
+                 // execute the remaining queries
+            ps.executeBatch(); 
+//            this.conn.commit();
+            this.conn.close();  
+            long end = System.currentTimeMillis();
+            ret.setMessaggio(String.format("Import done in %d ms\n", (end - start)));
+            ret.setEsito(true);
+
+            } catch (SQLException ex) {
+               ret.setMessaggio("Database error");
+                LOGGER.log.severe(estraiEccezione(ex));
+            }
+        
+        return ret;
+    } 
+      private static boolean checkCell(String val){
+        if (val.isEmpty())
+            return false;
+        if (!StringUtils.isNumeric(val)) {
+            return false;
+        } else {
+             return !val.contains("/");
+        }       
     }
 }

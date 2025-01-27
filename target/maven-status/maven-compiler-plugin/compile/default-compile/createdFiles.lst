@@ -3,6 +3,7 @@ so\seta\fca\gui\MainFrame$5.class
 so\seta\fca\entity\Utente.class
 so\seta\fca\util\Access.class
 so\seta\fca\gui\MainFrame$3.class
+so\seta\fca\gui\ImportFrame$FileUploadTask.class
 so\seta\fca\gui\MainFrame$8.class
 so\seta\fca\util\Utility.class
 so\seta\fca\entity\Lavorazione.class
@@ -10,6 +11,7 @@ so\seta\fca\gui\ExportFrame$2.class
 so\seta\fca\gui\Login$3.class
 so\seta\fca\gui\MainFrame$1.class
 so\seta\fca\util\LoggerNew.class
+so\seta\fca\gui\ImportFrame$3.class
 so\seta\fca\gui\Login$2.class
 so\seta\fca\gui\ExportFrame$5.class
 so\seta\fca\gui\MainFrame$6.class

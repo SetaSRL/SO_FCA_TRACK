@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package so.seta.fca.gui;
-import com.mysql.cj.protocol.Resultset;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -11,12 +11,6 @@ import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import so.seta.fca.util.LoggerNew;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import so.seta.fca.entity.Result;
 import so.seta.fca.util.Exports;
 /**
@@ -31,6 +25,7 @@ public class ExportFrame extends javax.swing.JFrame {
     String periodo1;
     String periodo2;
     List<String[]> rsLavorazioni = new ArrayList();
+    int counter;
     /**
      * Creates new form ExportFrame
      * @param frame
@@ -135,7 +130,7 @@ public class ExportFrame extends javax.swing.JFrame {
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(dataA, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(131, 131, 131)
+                                .addGap(146, 146, 146)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                     .addComponent(Export)
                                     .addComponent(Cerca)))))
@@ -145,7 +140,7 @@ public class ExportFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(418, Short.MAX_VALUE))
+                .addContainerGap(403, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,7 +163,7 @@ public class ExportFrame extends javax.swing.JFrame {
                                 .addGap(5, 5, 5)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(169, 169, 169)
+                                .addGap(153, 153, 153)
                                 .addComponent(Export))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(56, 56, 56)
@@ -207,6 +202,31 @@ public class ExportFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ExportActionPerformed
 
+//    public void TestFunction() throws FileNotFoundException, IOException {
+//         SXSSFWorkbook wb = new SXSSFWorkbook(100); // keep 100 rows in memory, exceeding rows will be flushed to disk
+//        Sheet sh = wb.createSheet();
+//        for(int rownum = 0; rownum < 10000; rownum++){
+//            Row row = sh.createRow(rownum);
+//            for(int cellnum = 0; cellnum < 10; cellnum++){
+//                Cell cell = row.createCell(cellnum);
+//                String address = new CellReference(cell).formatAsString();
+//                cell.setCellValue(address);
+//            }
+//        }
+        // Rows with rownum < 900 are flushed and not accessible
+//        for(int rownum = 0; rownum < 900; rownum++){
+//          Assert.assertNull(sh.getRow(rownum));
+//        }
+//        // ther last 100 rows are still in memory
+//        for(int rownum = 900; rownum < 1000; rownum++){
+//            Assert.assertNotNull(sh.getRow(rownum));
+//        }
+//        FileOutputStream out = new FileOutputStream("/temp/sxssf.xlsx");
+//        wb.write(out);
+//        out.close();
+//        // dispose of temporary files backing this workbook on disk
+//        wb.dispose();
+//    }
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

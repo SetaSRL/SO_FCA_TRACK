@@ -6,8 +6,13 @@
 package so.seta.fca.util;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
  import org.apache.poi.ss.usermodel.Cell;
 import static org.apache.poi.ss.usermodel.CellType.BOOLEAN;
@@ -106,7 +111,59 @@ public class ExcelImport  {
         } else {
              return !val.contains("/");
         }       
+    }
+    public static List<String> ReadExcelAsList(String excelFilePath) throws FileNotFoundException {
+        FileInputStream inputStream = new FileInputStream(excelFilePath);
+        List<String> listaPratiche = new ArrayList<>();
+        try {
+            Workbook workbook = new XSSFWorkbook(inputStream);
+ 
+            Sheet firstSheet = workbook.getSheetAt(1);
+            Iterator<Row> rowIterator = firstSheet.iterator();
+           
+             DataFormatter formatter = new DataFormatter(); //creating formatter using the default locale
+             while (rowIterator.hasNext()) {
+                 Row nextRow = rowIterator.next();
+                 Iterator<Cell> cellIterator = nextRow.cellIterator();
+                    while (cellIterator.hasNext()) {
+                        Cell nextCell = cellIterator.next();
+                        int columnIndex = nextCell.getColumnIndex();
+                        if (columnIndex == 0) {
+                           String numPratica  = formatter.formatCellValue(nextCell);
+                            if (checkCell(numPratica)) {
+                                listaPratiche.add(numPratica);
+                            }
+                        }   
+                     }
+                  
+                
+                 
+                            
+             }
+          
+              workbook.close();
+             
+            
+  
+           
+            long end = System.currentTimeMillis();
+        }  catch (IOException ex1) {
+             LOGGER.log.severe(estraiEccezione(ex1));
         }
-    }  
+        return listaPratiche;
+    } 
+    public static Result ReadAndInsertFromExcel(String excelFilePath) {
+          DB_FCA dbf = new DB_FCA();
+          return dbf.insPraticheBatch(excelFilePath);
+    }
+    
+    public static Result InsertListaPratiche(List<String> listaPratiche) {
+         DB_FCA dbf = new DB_FCA();
+         return dbf.insPraticheBatchFromList(listaPratiche);
+    }
+}  
+
+   
+
      
     

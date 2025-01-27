@@ -4,17 +4,14 @@
  */
 package so.seta.fca.gui;
 
-import java.awt.BorderLayout;
+
 import java.awt.Cursor;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import so.seta.fca.entity.Result;
@@ -30,10 +27,10 @@ public class ImportFrame extends javax.swing.JFrame {
     public static final ResourceBundle conf = ResourceBundle.getBundle("conf.conf");   
     public static final String PATH = conf.getString("path.log");
     public static LoggerNew LOGGER = new LoggerNew("FCA_TRACK",PATH);
-    private Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
+    private Cursor waitCursor = new Cursor(Cursor.HAND_CURSOR);
     private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     private String defaultButtonText = "Show Wait Cursor";
- 
+    private List<String> retPratiche;
     // a default constructor
 //    filechooser()
 //    {
@@ -66,11 +63,17 @@ public class ImportFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaEsito = new javax.swing.JTextArea();
+        progressBar = new javax.swing.JProgressBar();
 
         jFileChooser1.setFileFilter(null);
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jFileChooser1ActionPerformed(evt);
+            }
+        });
+        jFileChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jFileChooser1PropertyChange(evt);
             }
         });
 
@@ -80,6 +83,7 @@ public class ImportFrame extends javax.swing.JFrame {
         jLabel1.setText("Caricamento File");
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
         jButton1.setText("Ricerca File");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -91,6 +95,9 @@ public class ImportFrame extends javax.swing.JFrame {
         jTextAreaEsito.setRows(5);
         jScrollPane1.setViewportView(jTextAreaEsito);
 
+        progressBar.setBackground(new java.awt.Color(255, 0, 102));
+        progressBar.setStringPainted(true);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -98,17 +105,26 @@ public class ImportFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jButton1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(173, 173, 173)
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, 0))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(jLabel1)
-                .addGap(23, 23, 23)
-                .addComponent(jButton1)
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -118,123 +134,137 @@ public class ImportFrame extends javax.swing.JFrame {
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
         // TODO add your handling code here:
-       
+//    if (evt.getActionCommand().equals(javax.swing.JFileChooser.APPROVE_SELECTION)) {
+//        jTextAreaEsito.append("\n file selezionato");
+//    } else if (evt.getActionCommand().equals(javax.swing.JFileChooser.CANCEL_SELECTION)) {
+//        jTextAreaEsito.append("\n cancel selection");
+//    }
     }//GEN-LAST:event_jFileChooser1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-//        if (waitCursorIsShowing)
-//    {
-//      // set the cursor back to the default
-//      waitCursorIsShowing = false;
-//      jButton2.setText(defaultButtonText);
-//      this.setCursor(defaultCursor);
-//    }
-//    else
-//    {
-//      // change the cursor to the wait cursor
-//      waitCursorIsShowing = true;
-//      jButton2.setText("Back to Default Cursor");
-//      this.setCursor(waitCursor);
-//    }
+
         int returnVal = jFileChooser1.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
                  File file = jFileChooser1.getSelectedFile();
                  //ExcelImport.ReadFromExcel(file.getAbsolutePath());
                  this.setCursor(waitCursor);
-                 Result rit = ExcelImport.NewReadFromExcel(file.getAbsolutePath());
-                 
-                 if (rit.getEsito()) {
-                    jTextAreaEsito.setText(rit.getMessaggio());
-                 }
-                 else {
-                  jTextAreaEsito.setText("Nessuna pratica caricata"); 
-                 }
+                 new FileUploadTask(file).execute();
+            
                  this.setCursor(defaultCursor);
                 }
-            catch (IOException ex) {
+            catch (Exception ex) {
                 LOGGER.log.severe(estraiEccezione(ex));
+//            } catch (InterruptedException ex) {
+//                 LOGGER.log.severe(estraiEccezione(ex));
             }
-            finally {
-                 
-//                this.setCursor(Cursor.DEFAULT_CURSOR);
-            }
+            
         } else {
             System.out.println("File access cancelled by user.");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-    
-//    private void run(MainFrame frame) {
-//          final JDialog loading = new JDialog(frame);
-//            JPanel p1 = new JPanel(new BorderLayout());
-//            p1.add(new JLabel("Please wait..."), BorderLayout.CENTER);
-//            loading.setUndecorated(true);
-//            loading.getContentPane().add(p1);
-//            loading.pack();
-//            loading.setLocationRelativeTo(frame);
-//            loading.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-//            loading.setModal(true);
-//
-//            SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
-//                @Override
-//                protected String doInBackground() throws InterruptedException 
-//                    /** Execute some operation */   
-//                }
-//                @Override
-//                protected void done() {
-//                    loading.dispose();
-//                }
-//            };
-//            worker.execute(); //here the process thread initiates
-//            loading.setVisible(true);
-//
-//try {
-//    worker.get(); //here the parent thread waits for completion
-//} catch (Exception e1) {
-//    e1.printStackTrace();
-//}
-//    }
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(ImportFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(ImportFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(ImportFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(ImportFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new ImportFrame(this).setVisible(true);
-//            }
-//        });
-//    }
 
+    private void jFileChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jFileChooser1PropertyChange
+        // TOJDO add your handling code here:
+        if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY
+                .equals(evt.getPropertyName())) {
+            JFileChooser chooser = (JFileChooser)evt.getSource();
+            File oldFile = (File)evt.getOldValue();
+            File newFile = (File)evt.getNewValue();
+
+            // The selected file should always be the same as newFile
+            File curFile = chooser.getSelectedFile();
+            if (curFile != null)
+                jTextAreaEsito.setText(curFile + " selezionato\n");
+        } else if (JFileChooser.SELECTED_FILES_CHANGED_PROPERTY.equals(
+                evt.getPropertyName())) {
+            JFileChooser chooser = (JFileChooser)evt.getSource();
+            File[] oldFiles = (File[])evt.getOldValue();
+            File[] newFiles = (File[])evt.getNewValue();
+
+            // Get list of selected files
+            // The selected files should always be the same as newFiles
+            File[] files = chooser.getSelectedFiles();
+        }
+    
+    }//GEN-LAST:event_jFileChooser1PropertyChange
+    
+     private class FileUploadTask extends SwingWorker<Void, Integer> {
+        private final File file;
+        private final long start = System.currentTimeMillis();
+        private String esito = "";
+        public FileUploadTask(File file) {
+           this.file = file;
+           jTextAreaEsito.append("Inizio Importazione Pratiche\n");
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            uploadFile(file);
+            return null;
+        }
+
+        private void uploadFile(File file) throws IOException {
+            
+            
+            try (FileInputStream in = new FileInputStream(file)) {
+
+                byte[] buffer = new byte[4096];
+                long totalBytes = file.length();
+                long bytesUploaded = 0;
+                int bytesRead;
+
+                while ((bytesRead = in.read(buffer)) != -1) {
+//                    out.write(buffer, 0, bytesRead);
+                    bytesUploaded += bytesRead;
+                    int progress = (int) ((bytesUploaded * 100) / totalBytes);
+                    publish(progress);
+                }
+                    Result rit = ExcelImport.ReadAndInsertFromExcel(file.getAbsolutePath());
+                    if (rit.getEsito()) {
+                        esito = rit.getMessaggio();
+                    }
+                    else {
+                        esito = "Nessuna pratica caricata"; 
+                    }
+                
+            }
+
+
+        }
+
+        @Override
+        protected void process(java.util.List<Integer> chunks) {                                            
+            int latestProgress = chunks.get(chunks.size() - 1);
+            progressBar.setValue(latestProgress);
+            progressBar.setIndeterminate(true);
+            progressBar.setString("Caricamento...");
+        }
+
+        @Override
+        protected void done() {
+            
+           //long end = System.currentTimeMillis();
+           jTextAreaEsito.append("Importazione pratiche eseguita\n");
+           jTextAreaEsito.append(this.esito);
+           jTextAreaEsito.append("\n");
+           //jTextAreaEsito.append(String.format("Lettura file in %d ms\n", (end - start)));
+           progressBar.setStringPainted(false);
+           progressBar.setIndeterminate(false);
+           progressBar.setString(null);
+           // JOptionPane.showMessageDialog(null,
+           //         "Caricamento pratiche completato!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private static javax.swing.JTextArea jTextAreaEsito;
+    private javax.swing.JProgressBar progressBar;
     // End of variables declaration//GEN-END:variables
 }
