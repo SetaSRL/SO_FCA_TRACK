@@ -312,7 +312,7 @@ public class DB_FCA {
              
             long end = System.currentTimeMillis();
 //            ret.setMessaggio(String.format("Import done in %d ms\n", (end - start)));
-               ret.setMessaggio(String.format("Numero pratichwe inserite %d", contaPratiche)); 
+               ret.setMessaggio(String.format("Numero pratiche inserite %d", contaPratiche)); 
               ret.setEsito(true);
             } catch (IOException ex1) {
               ret.setMessaggio("Error reading file");
