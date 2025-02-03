@@ -5,8 +5,6 @@
 package so.seta.fca.gui;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import java.sql.SQLException;
-import javax.naming.NamingException;
 import javax.swing.JOptionPane;
 import so.seta.fca.util.Access;
 import so.seta.fca.db.DB_FCA;

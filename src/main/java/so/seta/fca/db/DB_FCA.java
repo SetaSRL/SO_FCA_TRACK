@@ -12,11 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -25,8 +21,6 @@ import so.seta.fca.entity.Utente;
 import so.seta.fca.util.LoggerNew;
 import static so.seta.fca.util.Utility.estraiEccezione;
 
-
-import java.util.logging.Level;
 import org.apache.commons.lang3.StringUtils;
 import so.seta.fca.entity.Lavorazione;
 import so.seta.fca.entity.Pratica;
@@ -186,7 +180,7 @@ public class DB_FCA {
     }
    
     public List<Lavorazione> VerificaPratica(String numeroPratica) {                       
-            List<Lavorazione> out = new ArrayList();    
+            List<Lavorazione> out = new ArrayList<>();    
             try {
               String query = "SELECT ID," +
                              "NUM_PRA," +
@@ -265,7 +259,7 @@ public class DB_FCA {
     }
       
      public Result insPraticheBatch(String excelFilePath) {
-          int batchSize = 30;
+          int batchSize = 20;
            Result ret = new Result();
         try {
             long start = System.currentTimeMillis();
@@ -276,7 +270,7 @@ public class DB_FCA {
  
             Sheet firstSheet = workbook.getSheetAt(1);
             Iterator<Row> rowIterator = firstSheet.iterator();
-//            this.conn.setAutoCommit(false);
+            this.conn.setAutoCommit(false);
             String sql = "INSERT INTO pratiche (NUM_PRA,STATO,data) values (?,'S',Now())";            
             PreparedStatement ps = this.conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             int count = 0;
@@ -299,19 +293,18 @@ public class DB_FCA {
                      }
                 if (++count % batchSize == 0) {
                     ps.executeBatch();
+                     
                 }                
              }
-          
-              workbook.close();
-             
             // execute the remaining queries
             ps.executeBatch();
-  
+            this.conn.commit();
+             workbook.close();
 //            this.conn.commit();
             this.conn.close();
              
             long end = System.currentTimeMillis();
-//            ret.setMessaggio(String.format("Import done in %d ms\n", (end - start)));
+          System.out.println(String.format("Import done in %d ms\n", (end - start)));
                ret.setMessaggio(String.format("Numero pratiche inserite %d", contaPratiche)); 
               ret.setEsito(true);
             } catch (IOException ex1) {
@@ -330,11 +323,10 @@ public class DB_FCA {
         try {
 //            this.conn.setAutoCommit(false);
             long start = System.currentTimeMillis();
-            String sql = "INSERT INTO praticheTest (NUM_PRA,STATO,data) values (?,'S',Now())";            
+            String sql = "INSERT INTO pratiche (NUM_PRA,STATO,data) values (?,'S',Now())";            
             PreparedStatement ps = this.conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             int count = 0;
             
-             Iterator<String> iter;
             for(String el : listaPratiche) {
               ps.setString(1, el);
                 ps.addBatch();

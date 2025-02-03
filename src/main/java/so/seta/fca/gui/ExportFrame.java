@@ -4,15 +4,26 @@
  */
 package so.seta.fca.gui;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import so.seta.fca.util.LoggerNew;
 import so.seta.fca.entity.Result;
 import so.seta.fca.util.Exports;
+import static so.seta.fca.util.Utility.estraiEccezione;
 /**
  *
  * @author Roberto Federico
@@ -130,7 +141,7 @@ public class ExportFrame extends javax.swing.JFrame {
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(dataA, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(146, 146, 146)
+                                .addGap(151, 151, 151)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                     .addComponent(Export)
                                     .addComponent(Cerca)))))
@@ -140,7 +151,7 @@ public class ExportFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(403, Short.MAX_VALUE))
+                .addContainerGap(398, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,6 +213,58 @@ public class ExportFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ExportActionPerformed
 
+    private void TestExport() {
+        String OUTPUT_FILENAME = "StreamingWrite.xlsx";
+        int ROWS = 10000;
+        int COLUMNS = 6;
+        List<String[]> out = new ArrayList<>();
+        for (int r = 0; r < ROWS; r++) {
+            String[] arr = {UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(),UUID.randomUUID().toString()};
+            out.add(arr);
+        }
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
+        String ts = date.format(formatter); 
+        long start = System.currentTimeMillis();
+        XSSFWorkbook wb = new XSSFWorkbook();
+        Sheet sh = wb.createSheet("Sample");    
+        int rownum = 0;
+        Row headerRow = sh.createRow(0);
+       
+        String[] headers = {"NumeroPratica","Esito","Data Lavorazione","Operatore","Utente","Nota Sospensione"};
+        for(int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+    //              cell.setCellStyle(headerCellStyle);
+        }
+        rownum++;
+
+         for (String[] value : out) {
+            Row row = sh.createRow(rownum);
+            for (int c = 0; c < COLUMNS; c++) {
+                Cell cell = row.createCell(c);
+                cell.setCellValue(value[c]);
+            }
+            rownum++;
+        }
+    
+
+        for (int c = 0; c < 7; c++) {
+           sh.autoSizeColumn(c);
+       }
+        try {
+            try (FileOutputStream fos = new FileOutputStream(new File(OUTPUT_FILENAME))) {
+                wb.write(fos);
+            }
+        }  catch (IOException e) {
+            LOGGER.log.severe(estraiEccezione(e));
+           
+        } 
+        long end = System.currentTimeMillis();
+       
+        System.out.println(String.format("Export done in %d ms\n", (end - start)));        
+   }
+    
 //    public void TestFunction() throws FileNotFoundException, IOException {
 //         SXSSFWorkbook wb = new SXSSFWorkbook(100); // keep 100 rows in memory, exceeding rows will be flushed to disk
 //        Sheet sh = wb.createSheet();

@@ -170,21 +170,12 @@ public class ImportFrame extends javax.swing.JFrame {
         if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY
                 .equals(evt.getPropertyName())) {
             JFileChooser chooser = (JFileChooser)evt.getSource();
-            File oldFile = (File)evt.getOldValue();
-            File newFile = (File)evt.getNewValue();
-
-            // The selected file should always be the same as newFile
             File curFile = chooser.getSelectedFile();
             if (curFile != null)
                 jTextAreaEsito.setText(curFile + " selezionato\n");
         } else if (JFileChooser.SELECTED_FILES_CHANGED_PROPERTY.equals(
                 evt.getPropertyName())) {
             JFileChooser chooser = (JFileChooser)evt.getSource();
-            File[] oldFiles = (File[])evt.getOldValue();
-            File[] newFiles = (File[])evt.getNewValue();
-
-            // Get list of selected files
-            // The selected files should always be the same as newFiles
             File[] files = chooser.getSelectedFiles();
         }
     
