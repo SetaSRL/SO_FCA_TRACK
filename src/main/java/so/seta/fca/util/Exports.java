@@ -49,7 +49,7 @@ public class Exports {
                 rownum++;
             }
             
-             for (int c = 1; c < 7; c++) {
+             for (int c = 0; c < 7; c++) {
                 sh.autoSizeColumn(c);
             }
              
